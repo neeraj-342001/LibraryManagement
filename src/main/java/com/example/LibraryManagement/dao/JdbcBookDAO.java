@@ -10,12 +10,12 @@ import org.springframework.stereotype.Repository;
 import com.example.LibraryManagement.model.Book;
 
 @Repository
-public class jdbcBookDAO {
+public class JdbcBookDAO {
     @Autowired
     private final JdbcTemplate jdbcTemplate;
     private final BeanPropertyRowMapper<Book> bookRowMapper;
 
-    public jdbcBookDAO(JdbcTemplate jdbcTemplate) {
+    public JdbcBookDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.bookRowMapper = new BeanPropertyRowMapper<>(Book.class);
     }
@@ -53,6 +53,25 @@ public class jdbcBookDAO {
                 "WHERE r.member_id = ?";
         return jdbcTemplate.query(sql, bookRowMapper, memberId);
     }
+
+    public int getBookCount(int bookISBN) {
+        String sql = "SELECT count FROM book WHERE book_ISBN = ?";
+        Integer result = jdbcTemplate.queryForObject(sql, Integer.class, bookISBN);
+
+        // Check for null before unboxing
+        return (result != null) ? result : 0;
+    }
+
+    public void updateBookCount(int bookISBN, int delta) {
+        String sql = "UPDATE book SET count = count + ? WHERE book_ISBN = ?";
+        jdbcTemplate.update(sql, delta, bookISBN);
+    }
+
+    public Book findById(int bookISBN) {
+        String sql = "SELECT * FROM book WHERE book_ISBN = ?";
+        return jdbcTemplate.queryForObject(sql, bookRowMapper, bookISBN);
+    }
+
 
     public void save(Book book) {
         String sql = "INSERT INTO book (book_ISBN, title, author, category, publication_date, rack_number, count) " +
