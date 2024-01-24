@@ -16,7 +16,7 @@ import com.example.LibraryManagement.model.Reserve;
 import com.example.LibraryManagement.service.inter.ReserveService;
 
 @RestController
-@RequestMapping("/api/allocate")
+@RequestMapping("/api/reserve")
 public class ReserveController {
 
     private final ReserveService reserveService;

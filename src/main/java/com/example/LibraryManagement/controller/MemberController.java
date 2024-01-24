@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.LibraryManagement.model.Book;
 import com.example.LibraryManagement.model.Member;
+import com.example.LibraryManagement.service.imp.MemberServiceImp;
 import com.example.LibraryManagement.service.inter.MemberService;
 
 @RestController
@@ -34,7 +35,7 @@ public class MemberController {
             memberService.saveMember(member);
             return ResponseEntity.status(HttpStatus.CREATED).body("Member saved successfully");
         }
-        catch (Exception e) {
+        catch (MemberServiceImp.MyServiceException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving member");
         }
     }
@@ -45,7 +46,7 @@ public class MemberController {
             List<Book> checkedOutBooks = memberService.getBooksCheckedOutByMember(memberId);
             return ResponseEntity.ok(checkedOutBooks);
         }
-        catch (Exception e) {
+        catch (MemberServiceImp.MyServiceException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.LibraryManagement.model.Allocate;
+import com.example.LibraryManagement.service.imp.AllocateServiceImp;
 import com.example.LibraryManagement.service.inter.AllocateService;
 
 @RestController
@@ -33,7 +34,7 @@ public class AllocateController {
             allocateService.saveAllocate(allocate);
             return ResponseEntity.status(HttpStatus.CREATED).body("Allocate saved successfully");
         }
-        catch (Exception e) {
+        catch (AllocateServiceImp.MyServiceException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error allocating member");
         }
     }
@@ -44,7 +45,7 @@ public class AllocateController {
             List<Allocate> overdueAllocations = allocateService.findOverdueAllocationsByMemberId(memberId);
             return ResponseEntity.ok(overdueAllocations);
         }
-        catch (Exception e) {
+        catch (AllocateServiceImp.MyServiceException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -55,7 +56,7 @@ public class AllocateController {
             int fineAmount  = allocateService.calculateFine(memberId,fineFactor);
             return ResponseEntity.ok(fineAmount);
         }
-        catch (Exception e) {
+        catch (AllocateServiceImp.MyServiceException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

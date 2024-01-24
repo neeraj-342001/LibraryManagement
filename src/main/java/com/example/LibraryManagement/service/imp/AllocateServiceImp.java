@@ -19,18 +19,37 @@ public class AllocateServiceImp implements AllocateService {
         this.allocateDAO = allocateDAO;
     }
 
-    @Override
     public int calculateFine(int memberId, int fineFactor) {
-        return (allocateDAO.getSumOfDateDifferencesForMember(memberId))*fineFactor;
+        try {
+            return (allocateDAO.getSumOfDateDifferencesForMember(memberId)) * fineFactor;
+        }
+        catch (JdbcAllocateDAO.MyDataAccessException e) {
+            throw new MyServiceException("Error calculating fine: " + e.getMessage(), e);
+        }
     }
 
-    @Override
     public List<Allocate> findOverdueAllocationsByMemberId(int memberId) {
-        return allocateDAO.findOverdueAllocationsByMemberId(memberId);
+        try {
+            return allocateDAO.findOverdueAllocationsByMemberId(memberId);
+        }
+        catch (JdbcAllocateDAO.MyDataAccessException e) {
+            throw new MyServiceException("Error finding overdue allocations: " + e.getMessage(), e);
+        }
     }
 
-    @Override
     public void saveAllocate(Allocate allocate) {
-        allocateDAO.save(allocate);
+        try {
+            allocateDAO.save(allocate);
+        }
+        catch (JdbcAllocateDAO.MyDataAccessException e) {
+            throw new MyServiceException("Error saving allocate: " + e.getMessage(), e);
+        }
+    }
+
+    // Custom exception for service layer issues
+    public static class MyServiceException extends RuntimeException {
+        public MyServiceException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }
