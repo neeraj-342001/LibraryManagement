@@ -26,11 +26,28 @@ public class MemberServiceImp implements MemberService {
 
     @Override
     public void saveMember(Member member) {
-        memberDAO.save(member);
+        try {
+            memberDAO.save(member);
+        }
+        catch (JdbcMemberDAO.MyDataAccessException e) {
+            throw new MyServiceException("Error saving member: " + e.getMessage(), e);
+        }
     }
 
     @Override
     public List<Book> getBooksCheckedOutByMember(int memberID) {
-        return bookDAO.getBooksCheckedOutByMember(memberID);
+        try {
+            return bookDAO.getBooksCheckedOutByMember(memberID);
+        }
+        catch (JdbcBookDAO.MyDataAccessException e) {
+            throw new MyServiceException("Error getting books checked out by member: " + e.getMessage(), e);
+        }
+    }
+
+    // Custom exception for service layer issues
+    public static class MyServiceException extends RuntimeException {
+        public MyServiceException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }

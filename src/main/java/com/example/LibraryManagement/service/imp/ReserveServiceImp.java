@@ -21,11 +21,28 @@ public class ReserveServiceImp implements ReserveService {
 
     @Override
     public void saveReserve(Reserve reserve) {
-        jdbcReserveDAO.save(reserve);
+        try {
+            jdbcReserveDAO.save(reserve);
+        }
+        catch (JdbcReserveDAO.MyDataAccessException e) {
+            throw new MyServiceException("Error saving reserve: " + e.getMessage(), e);
+        }
     }
 
     @Override
     public List<Reserve> getReserveByMemberId(int memberId) {
-        return jdbcReserveDAO.getReserveByMemberId(memberId);
+        try {
+            return jdbcReserveDAO.getReserveByMemberId(memberId);
+        }
+        catch (JdbcReserveDAO.MyDataAccessException e) {
+            throw new MyServiceException("Error getting reserves by member ID: " + e.getMessage(), e);
+        }
+    }
+
+    // Custom exception for service layer issues
+    public static class MyServiceException extends RuntimeException {
+        public MyServiceException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }

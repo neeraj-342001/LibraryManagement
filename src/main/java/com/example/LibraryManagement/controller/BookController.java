@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.LibraryManagement.model.Book;
 import com.example.LibraryManagement.model.Member;
+import com.example.LibraryManagement.service.imp.BookServiceImp;
 import com.example.LibraryManagement.service.inter.BookService;
 
 @RestController
@@ -35,33 +36,53 @@ public class BookController {
             bookService.saveBook(book);
             return ResponseEntity.status(HttpStatus.CREATED).body("Book saved successfully");
         }
-        catch (Exception e) {
+        catch (BookServiceImp.MyServiceException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving the book");
         }
     }
 
     @GetMapping("/search/title/{title}")
     public ResponseEntity<List<Book>> searchBooksByTitle(@PathVariable String title) {
-        List<Book> books = bookService.searchBooksByTitle(title);
-        return ResponseEntity.ok(books);
+        try {
+            List<Book> books = bookService.searchBooksByTitle(title);
+            return ResponseEntity.ok(books);
+        }
+        catch (BookServiceImp.MyServiceException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/search/author/{author}")
     public ResponseEntity<List<Book>> searchBooksByAuthor(@PathVariable String author) {
-        List<Book> books = bookService.searchBooksByAuthor(author);
-        return ResponseEntity.ok(books);
+        try {
+            List<Book> books = bookService.searchBooksByAuthor(author);
+            return ResponseEntity.ok(books);
+        }
+        catch (BookServiceImp.MyServiceException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/search/category/{category}")
     public ResponseEntity<List<Book>> searchBooksByCategory(@PathVariable String category) {
-        List<Book> books = bookService.searchBooksByCategory(category);
-        return ResponseEntity.ok(books);
+        try {
+            List<Book> books = bookService.searchBooksByCategory(category);
+            return ResponseEntity.ok(books);
+        }
+        catch (BookServiceImp.MyServiceException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/search/publication/{publication}")
     public ResponseEntity<List<Book>> searchBooksByPublicationDate(@PathVariable String publication) {
-        List<Book> books = bookService.searchBooksByPublicationDate(publication);
-        return ResponseEntity.ok(books);
+        try {
+            List<Book> books = bookService.searchBooksByPublicationDate(publication);
+            return ResponseEntity.ok(books);
+        }
+        catch (BookServiceImp.MyServiceException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/members/{bookISBN}")
@@ -70,7 +91,7 @@ public class BookController {
             List<Member> members = bookService.getMembersWhoTookBook(bookISBN);
             return new ResponseEntity<>(members, HttpStatus.OK);
         }
-        catch (Exception e) {
+        catch (BookServiceImp.MyServiceException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
